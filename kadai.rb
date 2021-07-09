@@ -7,7 +7,7 @@ server = WEBrick::HTTPServer.new({
 ['INT', 'TERM'].each {|signal|
   Signal.trap(signal){ server.shutdown }
 }
-server.mount('/kadai', WEBrick::HTTPServlet::ERBHandler, 'kadai.html.erb')
+server.mount('/', WEBrick::HTTPServlet::ERBHandler, 'kadai.html.erb')
 server.mount('/form1.cgi', WEBrick::HTTPServlet::CGIHandler, 'form1.rb')
 # この一行を追記
 server.mount('/form2.cgi', WEBrick::HTTPServlet::CGIHandler, 'form2.rb')

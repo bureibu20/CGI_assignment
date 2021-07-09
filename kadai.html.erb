@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>テスト！！！！！！！！！！！！！</h1>
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+    <form action="form1.cgi" method="POST">
+       下記に文字を入力してください<br><br> 
+      <input type="text" name="input" ><br>
+      <input type="submit" name="送信" >
+    </form>
+    
+    <% result = connection.exec("select date, quality from crops;") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <% data << "ゴーヤの大きさ：#{record["weight"]} 日付：#{record["date"]}" %>
+    <% end %>
+    <form action="form2.cgi" method="POST">
+      下記のボタンを押すと、ゴーヤの大きさと日付の情報ページに飛びます<br><br>
+    <input type="text" name="date" value="<%= data.join(' ') %>">
+    <input type="submit" name="送信" >
+    </form>
+    
+    <% result = connection.exec("select date, quality from crops;") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+      <% data << "ゴーヤの長さ：#{record["length"]} 質：#{record["quality"]}" %>
+    <% end %>
+    <form action="form3.cgi" method="POST">
+    下記のボタンを押すと、ゴーヤの長さと質の情報ページに飛びます<br><br>
+    <input ype="text" name="goya" value="<%= data.join(' ') %>">
+    <input type="submit" name="送信" >
+    </form>
+    
+    <% result1 = connection.exec("select * from crops WHERE NOT give_for = '自家消費';") %>
+    <% data1 = [] %>
+    <% result1.each do |record| %>
+      <% data1 << "売った相手 : #{record["give_for"]}" %>
+    <% end %>
+    <form action="form4.cgi" method="POST">
+    下記のボタンを押すと、譲渡先が自家消費ではないものの情報ページに飛びます。<br><br>
+    <input type="text" name="sale" value="<%= data1.join(' ') %>">
+    <input type="submit" name="送信">
+    </form>
+
+    <% result2 = connection.exec("select quality from crops WHERE quality=false;") %>
+    <%# binding.irb %>
+    <% data2 = [] %>
+    <% result2.each do |record| %>
+      <% data2 << "売った相手 : #{record["quality"]}" %>
+    <% end %>
+    <form action="form5.cgi" method="POST">
+    下記のボタンを押すと、品質が悪いものの情報ページに飛びます。<br><br>
+    <input type="text" name="quality" value="<%= data2.join(' ') %>">
+    <input type="submit" name="送信">
+    </form>
+    
+  </body>
+</html>
